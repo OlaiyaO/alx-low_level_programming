@@ -6,10 +6,11 @@
 #include <stdio.h>
 
 /*
- * This is the entry point to a program that prints
- * ""programming is like building multilingual puzzle"
+ * main: Entry point -  main function is the entry point to a program
+ * * Our program prints "programming is like building multilingual puzzle
+ *
+ * return: returns an int type 0 for successful compilation
  */
-
 int main(void)
 {
 	puts("\"Programming is like building a multilingual puzzle");
