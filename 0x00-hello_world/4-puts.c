@@ -1,15 +1,19 @@
 /*
- * 4-puts.c
- * Oniya Olaiya
+ * File: 4-puts.c
+ * Author: Oniya Olaiya
+ * Description: This program prints a message to the console.
+ *		It serves as an example of using the `puts` function.
  */
 
 #include <stdio.h>
 
-/*
- * main: Entry point -  main function is the entry point to a program
- * * Our program prints "programming is like building multilingual puzzle
+/**
+ * main - Entry point of the program.
  *
- * return: returns an int type 0 for successful compilation
+ * Description: This function is the entry point for the program.
+ *		It prints a message to the console using the `puts` function.
+ *
+ * Return: Always 0 (Success)
  */
 int main(void)
 {
