@@ -6,7 +6,8 @@
 #include <stdio.h>
 
 /*
- * This is the entry point to a program that prings ""programming is like building multilingual puzzle"
+ * This is the entry point to a program that prints
+ * ""programming is like building multilingual puzzle"
  */
 
 int main(void)
