@@ -24,8 +24,10 @@ int main(void)
 
 	while (number < 10)
 	{
-		putchar(number);
+		putchar('0' + number);
 		number++;
 	}
+
+	putchar('\n');
 	return (0);
 }
