@@ -29,9 +29,10 @@ int main(void)
 			putchar('0' + number);
 		} else
 		{
-			putchar('A' + (number - 10));
+			putchar('a' + (number - 10));
 		}
 		number++;
 	}
+	putchar('\n');
 	return (0);
 }
