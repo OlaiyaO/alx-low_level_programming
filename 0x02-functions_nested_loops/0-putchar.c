@@ -5,7 +5,7 @@
  *		It serves as an example of using the `puts` function.
  */
 
-#include <main.h>
+#include "main.h"
 
 /**
  * main - Entry point of the program.
