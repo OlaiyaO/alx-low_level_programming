@@ -1,11 +1,11 @@
 /*
- * File: 4-puts.c
+ * File: 0-putchar.c
  * Author: Oniya Olaiya
  * Description: This program prints a message to the consol.
  *		It serves as an example of using the `puts` function.
  */
 
-#include <stdio.h>
+#include <main.h>
 
 /**
  * main - Entry point of the program.
@@ -18,13 +18,14 @@
 
 int main(void)
 {
-	char str[] = "_putchar\n";
+	char *str = "_putchar";
 	int i = 0;
 
 	while (str[i] != '\0')
 	{
-		putchar(str[i]);
+		_putchar(str[i]);
 		i++;
 	}
+	_putchar('\n');
 	return (0);
 }
