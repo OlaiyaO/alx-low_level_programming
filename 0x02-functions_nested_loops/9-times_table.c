@@ -46,6 +46,11 @@ void times_table(void)
 			}
 			_putchar((product % 10) + '0');
 
+			if (column == 9)
+			{
+				_putchar('\n');
+			}
+
 			column++;
 		}
 		_putchar('\n');
