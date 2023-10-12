@@ -53,7 +53,6 @@ void times_table(void)
 
 			column++;
 		}
-		_putchar('\n');
 		row++;
 	}
 }
