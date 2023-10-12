@@ -42,7 +42,10 @@ void times_table(void)
 			}
 			else
 			{
-				_putchar(' ');
+				if (column > 0)
+				{
+					_putchar(' ');
+				}
 			}
 			_putchar((product % 10) + '0');
 
