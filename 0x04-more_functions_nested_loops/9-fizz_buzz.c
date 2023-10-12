@@ -19,12 +19,12 @@ int main(void)
 
 	while (fizz_buzz <= 100)
 	{
-		if (fizz_buzz % 3 == 0)
-		{
-			printf("Fizz");
-		} else if (fizz_buzz % 15 == 0)
+		if (fizz_buzz % 3 == 0 && fizz_buzz % 5 == 0)
 		{
 			printf("FizzBuzz");
+		} else if (fizz_buzz % 3 == 0)
+		{
+			printf("Fizz");
 		} else if (fizz_buzz % 5 == 0)
 		{
 			printf("Buzz");
