@@ -14,15 +14,17 @@
  */
 void print_number(int n)
 {
+	unsigned int positive_number = n;
+
 	if (n < 0)
 	{
 		_putchar('-');
-		n = -n;
+		positive_number = -positive_number;
 	}
 
-	if (n / 10 != 0)
+	if (positive_number / 10 != 0)
 	{
-		print_number(n / 10);
+		print_number(positive_number / 10);
 	}
-	_putchar((n % 10) + '0');
+	_putchar((positive_number % 10) + '0');
 }
