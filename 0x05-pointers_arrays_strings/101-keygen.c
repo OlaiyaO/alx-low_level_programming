@@ -20,9 +20,10 @@
 
 int main(void)
 {
+	int i;
+
 	srand(time(NULL));
 
-	int i;
 	for (i = 0; i < 10; i++)
 	{
 		char random_char = rand() % 93 + 33;
