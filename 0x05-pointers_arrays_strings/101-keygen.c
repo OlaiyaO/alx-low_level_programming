@@ -4,7 +4,6 @@
  * Description: This program prints the result of _atoid.
  */
 
-#include "main.h"
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
@@ -20,16 +19,25 @@
 
 int main(void)
 {
-	int i;
+	int password[100];
+	int i, sum, n;
+
+	sum = 0;
 
 	srand(time(NULL));
 
-	for (i = 0; i < 10; i++)
+	for (i = 0; i < 100; i++)
 	{
-		char random_char = rand() % 93 + 33;
+		password[i] = rand() % 78;
+		sum += (password[i] + '@');
 
-		_putchar(random_char);
+		if ((2772 - sum) < 78)
+		{
+			n = 2772 - sum - 32;
+			sum += n;
+			putchar(n + 32);
+
+		}
 	}
-	_putchar('\n');
 	return (0);
 }
