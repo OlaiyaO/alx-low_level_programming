@@ -23,18 +23,19 @@
 int main(void)
 {
 	long int a = 1, b = 2, next;
-	long int count = 0;
+	long int sum = 0;
+	int count;
 
-	while (count <= 40000000)
+	for (count = 0; count < 49; count++)
 	{
-		if (b % 2 == 0)
+		if ((b % 2 == 0) && (b <= 4000000))
 		{
-			count += b;
+			sum += b;
 		}
 		next = a + b;
 		a = b;
 		b = next;
-		}
-	printf("%ld\n", count);
+	}
+	printf("%ld\n", sum);
 	return (0);
 }
