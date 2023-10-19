@@ -1,5 +1,5 @@
 /*
- * File: 2-strncat.c
+ * File: -strncat.c
  * Author: Oniya Olaiya
  */
 
@@ -25,8 +25,8 @@ int _strcmp(char *s1, char *s2)
 	}
 
 	if (*s1 < *s2)
-		return (-1);
+		return (*s1 - *s2);
 	else if (*s1 > *s2)
-		return (1);
+		return (*s1 - *s2);
 	return (0);
 }
