@@ -17,17 +17,31 @@
 
 void print_number(int n)
 {
+	unsigned int absoluteValue, digit, divisor;
+
 	if (n < 0)
 	{
 		_putchar('-');
-		n = -n;
+		absoluteValue = -n;
 	}
 
-	if (n / 10 != 0)
+	else
 	{
-		print_number(n / 10);
+		absoluteValue = n;
 	}
 
-	_putchar((n % 10) + '0');
-}
+	digit = absoluteValue;
+	divisor = 1;
 
+	while (digit > 9)
+	{
+		digit /= 10;
+		divisor *= 10;
+	}
+
+	while (divisor >= 1)
+	{
+		_putchar(((absoluteValue / divisor) % 10) + '0');
+		divisor /= 10;
+	}
+}
