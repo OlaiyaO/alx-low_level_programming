@@ -28,9 +28,9 @@ int main(void)
 
 	ptr = _strncat(s1, s2, 1);
 
-	printf("%s", s1);
+	printf("%s\n", s1);
 	printf("%s", s2);
-	printf("%s", ptr);
+	printf("%s\n", ptr);
 
 	ptr = _strncat(s1, s2, 1024);
 
