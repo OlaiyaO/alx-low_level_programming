@@ -15,46 +15,39 @@
  * @size: The size of the buffer.
  * Return: nothing.
  */
-
 void print_buffer(char *b, int size)
 {
-	int i, j;
-	unsigned char *ptr = (unsigned char *)b;
+	int index, innerIndex, tempIndex;
 
 	if (size <= 0)
 	{
 		printf("\n");
 		return;
 	}
-	for (i = 0; i < size; i += 10)
+
+	for (index = 0; index < size; index += 10)
 	{
-		printf("%08x: ", i);
-		for (j = 0; j < 10; j++)
+		printf("%.8x:", index);
+		for (innerIndex = index; innerIndex < index + 10; innerIndex++)
 		{
-			if (i + j < size)
-				printf("%02x", (unsigned char)b[i + j]);
+			if (innerIndex % 2 == 0)
+				printf(" ");
+			if (innerIndex < size)
+				printf("%.2x", *(b + innerIndex));
 			else
 				printf("  ");
-			if (j % 2 != 0 && j < 9)
-				printf(" ");
 		}
 		printf(" ");
-		for (j = 0; j < 10; j++)
+
+		for (tempIndex = index; tempIndex < index + 10; tempIndex++)
 		{
-			if (i + j < size)
-			{
-				if (ptr[i + j] >= 32 && ptr[i + j] <= 126)
-					printf("%c", ptr[i + j]);
-				else
-					printf(".");
-			}
+			if (tempIndex >= size)
+				break;
+			if (*(b + tempIndex) < 32 || *(b + tempIndex) > 126)
+				printf("%c", '.');
 			else
-			{
-				printf(" ");
-			}
+				printf("%c", *(b + tempIndex));
 		}
-		if (i + 10 < size)
-			printf("\n");
+		printf("\n");
 	}
-	printf("\n");
 }
