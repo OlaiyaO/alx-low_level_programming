@@ -34,7 +34,7 @@ void print_buffer(char *b, int size)
 		for (j = 0; j < 10; j++)
 		{
 			if (i + j < size)
-				printf("%02x", ptr[i + j]);
+				printf("%02x", (unsigned char)b[i + j]);
 			else
 				printf("  ");
 			if (j % 2 != 0 && j < 9)
