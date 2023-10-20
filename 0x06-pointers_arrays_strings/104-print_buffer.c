@@ -57,6 +57,8 @@ void print_buffer(char *b, int size)
 				printf(" ");
 			}
 		}
-		printf("\n");
+		if (i + 10 < size)
+			printf("\n");
 	}
+	printf("\n");
 }
