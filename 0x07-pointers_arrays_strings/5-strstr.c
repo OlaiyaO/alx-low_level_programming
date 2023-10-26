@@ -9,7 +9,7 @@
 #include <stdio.h>
 
 /**
- * _strpbrk - Entry point of the program.
+ * _strspn - Entry point of the program.
  *
  * Description: This function is the entry point for the program.
  *		It calls the print_sign function to do the checks.
@@ -18,18 +18,30 @@
  * Return: Always 0 (Success)
  */
 
-char *_strpbrk(char *s, char *accept)
+unsigned int _strspn(char *s, char *accept)
 {
-	char *a = accept;
-	
-	if (*s == '\0')
-		return (NULL);
-	
-	while (*a)
+	unsigned int length = 0;
+
+	while (*s != '\0')
 	{
-		if (*s == *a)
-			return (s);
-		a++;
+		int found = 0;
+		int i;
+
+		for (i = 0; accept[i] != '\0'; i++)
+		{
+			if (*s == accept[i])
+			{
+				found = 1;
+				break;
+			}
+		}
+		if (found == 0)
+		{
+			return (length);
+		}
+		length++;
+		s++;
 	}
-	return (_strpbrk(s + 1, accept));
+	return (length);
 }
+
