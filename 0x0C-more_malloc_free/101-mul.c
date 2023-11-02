@@ -1,6 +1,6 @@
+#include <stdlib.h>
 #include "main.h"
 #include <stdio.h>
-#include <stdlib.h>
 
 /**
  * is_digit - Checks if a string is a valid digit
@@ -72,17 +72,15 @@ int *multiply(char *num1, char *num2)
 		carry = 0;
 		n1 = num1[i] - '0';
 
-		j = len2 - 1;
-
 		for (j = len2 - 1; j >= 0; j--)
 		{
 			n2 = num2[j] - '0';
 
-			temp = n1 * n2 + result[i + j + 1] + carry;
-			result[i + j + 1] = temp % 10;
+			temp = n1 * n2 + result[i + j] + carry;
+			result[i + j] = temp % 10;
 			carry = temp / 10;
 		}
-		result[i + j + 1] = carry;
+		result[i + j] += carry;
 	}
 
 	for (i = 0; result[i] == 0 && i < len1 + len2; i++)
@@ -90,6 +88,7 @@ int *multiply(char *num1, char *num2)
 
 	return (result);
 }
+
 
 /**
  * main - Multiplies two positive numbers
