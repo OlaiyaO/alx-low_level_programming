@@ -1,194 +1,216 @@
 #include "main.h"
-#include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 
 /**
- * is_positive_integer - Checks if a string is a valid positive integer
- * @str: The string to check
- *
- * Return: (1) if it's a positive integer, (0) otherwise
+ * str_length - Calculate the length of a string
+ * @str: Input pointer to the string
+ * Return: Length of the string
  */
 
-int is_positive_integer(char *str)
+int str_length(char *str)
 {
-	while (*str)
+	int length = 0;
+
+	while (*str != '\0')
 	{
-		if (*str < '0' || *str > '9')
-			return (0);
+		length++;
 		str++;
 	}
-	return (1);
+
+	return (length);
 }
 
 /**
- * initialize_result - Initialize and allocate memory for the result array
- * @len_result: Length of the result array
- * Return: (A pointer to the initialized result array)
+ * allocate_memory - Allocates memory for an array using malloc
+ * @element_size: Size of each element
+ * @num_elements: Number of elements to allocate
+ * Return: Pointer to the allocated memory
  */
 
-int *initialize_result(int len_result)
+void *allocate_memory(unsigned int element_size, unsigned int num_elements)
 {
-	int i;
-	int *result = (int *)malloc(sizeof(int) * len_result);
+	unsigned int i;
+	char *ptr;
 
-	if (result == NULL)
-	{
+	if (element_size == 0 || num_elements == 0)
 		return (NULL);
-	}
 
-	for (i = 0; i < len_result; i++)
-	{
-		result[i] = 0;
-	}
+	if (element_size >= UINT_MAX / num_elements || num_elements >= UINT_MAX / element_size)
+		return (NULL);
 
-	return (result);
+	ptr = (char *)malloc(element_size * num_elements);
+
+	if (ptr == NULL)
+		return (NULL);
+
+	for (i = 0; i < element_size * num_elements; i++)
+		ptr[i] = 0;
+
+	return ((void *)ptr);
 }
 
 /**
- * perform_multiplication - Multiply two numbers
- * and store the result in the result array
- * @num1: The first number
- * @num2: The second number
- * @result: The result array
- * @len1: Length of num1
- * @len2: Length of num2
+ * add_arrays - Adds two arrays of integers
+ * @product_array: Pointer to the array with numbers from product
+ * @sum_array: Pointer to the array with numbers from total sum
+ * @array_length: Length of both arrays
+ * Return: void
  */
 
-void perform_multiplication(char *num1, char *num2,
-		int *result, int len1, int len2)
+void add_arrays(int *product_array, int *sum_array, int array_length)
 {
-	int i, j;
+	int i = 0, last_index = array_length - 1, carry = 0, sum;
 
-	for (i = len1 - 1; i >= 0; i--)
+	while (i < array_length)
 	{
-		for (j = len2 - 1; j >= 0; j--)
+		sum = carry + product_array[last_index] + sum_array[last_index];
+		sum_array[last_index] = sum % 10;
+		carry = sum / 10;
+		i++;
+		last_index--;
+	}
+}
+
+/**
+ * is_digit - Checks if a character is a digit
+ * @c: Input character to check
+ * Return: 0 (failure), 1 (success)
+ */
+
+int is_digit(char c)
+{
+	if (c >= '0' && c <= '9')
+		return 1;
+
+	printf("Error\n");
+	return (0);
+}
+
+/**
+ * multiply_numbers - Multiplies two numbers, prints result
+ * @smaller_num: Factor 1 (the smaller of the two numbers)
+ * @smaller_num_length: Length of factor 1
+ * @larger_num: Factor 2 (the larger of the two numbers)
+ * @larger_num_length: Length of factor 2
+ * @result_length: Length of result arrays
+ * Return: 0 (failure), 1 (success)
+ */
+
+int *multiply_numbers(char *smaller_num, int smaller_num_length, char *larger_num, int larger_num_length, int result_length)
+{
+	int i = 0, smaller_index = smaller_num_length - 1;
+	int larger_index, product, carry, digit;
+	int *product_array, *sum_array;
+
+	sum_array = allocate_memory(sizeof(int), result_length);
+
+	while (i < smaller_num_length)
+	{
+		product_array = allocate_memory(sizeof(int), result_length);
+		larger_index = larger_num_length - 1;
+		digit = (result_length - 1 - i);
+
+		if (!is_digit(smaller_num[smaller_index]))
+			return (NULL);
+
+		carry = 0;
+
+		while (larger_index >= 0)
 		{
-			int product = (num1[i] - '0') * (num2[j] - '0');
-			int sum = product + result[i + j + 1];
+			if (!is_digit(larger_num[larger_index]))
+				return (NULL);
 
-			result[i + j] += sum / 10;
-			result[i + j + 1] = sum % 10;
+			product = (smaller_num[smaller_index] - '0') * (larger_num[larger_index] - '0');
+			product += carry;
+			product_array[digit] += product % 10;
+			carry = product / 10;
+			digit--;
+			larger_index--;
 		}
+
+		add_arrays(product_array, sum_array, result_length);
+		free(product_array);
+		i++;
+		smaller_index--;
 	}
+
+	return (sum_array);
 }
 
 /**
- * create_result_string - Create the result string from the result array
- * @result: The result array
- * @len_result: Length of the result array
- * @leading_zeros: Number of leading zeros
- * Return: (A pointer to the result string)
+ * print_result - Prints the result array
+ * @result_array: Pointer to an integer array with numbers to add
+ * @result_length: Length of the result array
+ * Return: void
  */
 
-char *create_result_string(int *result, int len_result, int leading_zeros)
+void print_result(int *result_array, int result_length)
 {
-	int i;
-	char *result_str = (char *)malloc(len_result - leading_zeros + 1);
+	int i = 0;
 
-	if (result_str == NULL)
+	while (result_array[i] == 0 && i < result_length)
 	{
-		return (NULL);
+		i++;
 	}
 
-	for (i = 0; i < len_result - leading_zeros; i++)
+	if (i == result_length)
 	{
-		result_str[i] = result[i + leading_zeros] + '0';
+		putchar('0');
 	}
 
-	result_str[len_result - leading_zeros] = '\0';
+	while (i < result_length)
+	{
+		putchar(result_array[i++] + '0');
+	}
 
-	return (result_str);
+	putchar('\n');
 }
 
 /**
- * multiply - Multiplies two positive numbers
- * @num1: The first number
- * @num2: The second number
- *
- * Return: (The result of the multiplication)
+ * main - Multiplies two input numbers of large lengths and prints the result or an error
+ * @argc: Input count of arguments
+ * @argv: Input array of string arguments
+ * Return: 0 (Success)
  */
 
-char *multiply(char *num1, char *num2)
+int main(int argc, char **argv)
 {
-	int len1 = strlen(num1);
-	int len2 = strlen(num2);
-	int len_result = len1 + len2;
-	int *result;
-	char *result_str;
-	int leading_zeros = 0;
+	int smaller_num_length, larger_num_length, result_length, temp;
+	int *result_array;
+	char *smaller_num, *larger_num;
 
-	if (len1 == 0 || len2 == 0)
-		return (NULL);
-
-	result = initialize_result(len_result);
-
-	if (result == NULL)
-		return (NULL);
-
-	perform_multiplication(num1, num2, result, len1, len2);
-
-	while (leading_zeros < len_result - 1 && result[leading_zeros] == 0)
-		leading_zeros++;
-
-	result_str = create_result_string(result, len_result, leading_zeros);
-
-	if (result_str == NULL)
+	if (argc != 3)
 	{
-		free(result);
-		return (NULL);
+		printf("Error\n");
+		exit(98);
 	}
 
-	free(result);
+	smaller_num_length = str_length(argv[1]);
+	larger_num_length = str_length(argv[2]);
+	result_length = smaller_num_length + larger_num_length;
 
-	return (result_str);
-}
-
-/**
- * main - Entry point for the multiplication program
- * @argc: The number of command-line arguments
- * @argv: An array of command-line argument strings
- *
- * Return: (0 on success, 98 on failure)
- */
-
-int main(int argc, char *argv[])
-{
-	char *num1 = argv[1];
-	char *num2 = argv[2];
-	char *result = multiply(num1, num2);
-	int i;
-
-	if (argc != 3 || !is_positive_integer(argv[1])
-			|| !is_positive_integer(argv[2]))
+	if (smaller_num_length < larger_num_length)
 	{
-		_putchar('E');
-		_putchar('r');
-		_putchar('r');
-		_putchar('o');
-		_putchar('r');
-		_putchar('\n');
-		return (98);
+		smaller_num = argv[1];
+		larger_num = argv[2];
+	}
+	else
+	{
+		smaller_num = argv[2];
+		larger_num = argv[1];
+		temp = larger_num_length;
+		larger_num_length = smaller_num_length;
+		smaller_num_length = temp;
 	}
 
-	if (result == NULL)
-	{
-		_putchar('E');
-		_putchar('r');
-		_putchar('r');
-		_putchar('o');
-		_putchar('r');
-		_putchar('\n');
-		return (98);
-	}
+	result_array = multiply_numbers(smaller_num, smaller_num_length, larger_num, larger_num_length, result_length);
 
-	for (i = 0; result[i] != '\0'; i++)
-	{
-		_putchar(result[i]);
-	}
+	if (result_array == NULL)
+		exit(98);
 
-	_putchar('\n');
-	free(result);
-
+	print_result(result_array, result_length);
 	return (0);
 }
 
