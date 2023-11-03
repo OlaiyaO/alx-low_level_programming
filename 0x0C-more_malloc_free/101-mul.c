@@ -23,7 +23,7 @@ int is_positive_integer(char *str)
 /**
  * initialize_result - Initialize and allocate memory for the result array
  * @len_result: Length of the result array
- * Return: A pointer to the initialized result array
+ * Return: (A pointer to the initialized result array)
  */
 
 int *initialize_result(int len_result)
@@ -46,7 +46,7 @@ int *initialize_result(int len_result)
 
 /**
  * perform_multiplication - Multiply two numbers
- *	and store the result in result array
+ * and store the result in the result array
  * @num1: The first number
  * @num2: The second number
  * @result: The result array
@@ -77,7 +77,7 @@ void perform_multiplication(char *num1, char *num2,
  * @result: The result array
  * @len_result: Length of the result array
  * @leading_zeros: Number of leading zeros
- * Return: A pointer to the result string
+ * Return: (A pointer to the result string)
  */
 
 char *create_result_string(int *result, int len_result, int leading_zeros)
@@ -100,13 +100,12 @@ char *create_result_string(int *result, int len_result, int leading_zeros)
 	return (result_str);
 }
 
-
 /**
  * multiply - Multiplies two positive numbers
  * @num1: The first number
  * @num2: The second number
  *
- * Return: The result of the multiplication
+ * Return: (The result of the multiplication)
  */
 
 char *multiply(char *num1, char *num2)
@@ -149,7 +148,7 @@ char *multiply(char *num1, char *num2)
  * @argc: The number of command-line arguments
  * @argv: An array of command-line argument strings
  *
- * Return: 0 on success, 98 on failure
+ * Return: (0 on success, 98 on failure)
  */
 
 int main(int argc, char *argv[])
@@ -160,7 +159,7 @@ int main(int argc, char *argv[])
 	int i;
 
 	if (argc != 3 || !is_positive_integer(argv[1])
-		|| !is_positive_integer(argv[2]))
+			|| !is_positive_integer(argv[2]))
 	{
 		_putchar('E');
 		_putchar('r');
