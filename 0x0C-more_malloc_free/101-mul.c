@@ -1,15 +1,15 @@
-#include <stdlib.h>
 #include "main.h"
-#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 /**
- * is_digit - Checks if a string is a valid digit
+ * is_positive_integer - Checks if a string is a valid positive integer
  * @str: The string to check
  *
- * Return: 1 if it's a digit, 0 otherwise
+ * Return: (1) if it's a positive integer, (0) otherwise
  */
 
-int is_digit(char *str)
+int is_positive_integer(char *str)
 {
 	while (*str)
 	{
@@ -21,91 +21,146 @@ int is_digit(char *str)
 }
 
 /**
- * _calloc - Allocate memory for an array using calloc
- * @nmemb: Number of elements
- * @size: Size of each element
- *
- * Return: Pointer to the allocated memory, or NULL if allocation fails
+ * initialize_result - Initialize and allocate memory for the result array
+ * @len_result: Length of the result array
+ * Return: A pointer to the initialized result array
  */
 
-void *_calloc(unsigned int nmemb, unsigned int size)
+int *initialize_result(int len_result)
 {
-	void *ptr;
+	int i;
+	int *result = (int *)malloc(sizeof(int) * len_result);
 
-	if (nmemb == 0 || size == 0)
+	if (result == NULL)
+	{
 		return (NULL);
+	}
 
-	ptr = calloc(nmemb, size);
+	for (i = 0; i < len_result; i++)
+	{
+		result[i] = 0;
+	}
 
-	if (ptr == NULL)
-		return (NULL);
-
-	return (ptr);
+	return (result);
 }
+
+/**
+ * perform_multiplication - Multiply two numbers
+ *	and store the result in result array
+ * @num1: The first number
+ * @num2: The second number
+ * @result: The result array
+ * @len1: Length of num1
+ * @len2: Length of num2
+ */
+
+void perform_multiplication(char *num1, char *num2,
+		int *result, int len1, int len2)
+{
+	int i, j;
+
+	for (i = len1 - 1; i >= 0; i--)
+	{
+		for (j = len2 - 1; j >= 0; j--)
+		{
+			int product = (num1[i] - '0') * (num2[j] - '0');
+			int sum = product + result[i + j + 1];
+
+			result[i + j] += sum / 10;
+			result[i + j + 1] = sum % 10;
+		}
+	}
+}
+
+/**
+ * create_result_string - Create the result string from the result array
+ * @result: The result array
+ * @len_result: Length of the result array
+ * @leading_zeros: Number of leading zeros
+ * Return: A pointer to the result string
+ */
+
+char *create_result_string(int *result, int len_result, int leading_zeros)
+{
+	int i;
+	char *result_str = (char *)malloc(len_result - leading_zeros + 1);
+
+	if (result_str == NULL)
+	{
+		return (NULL);
+	}
+
+	for (i = 0; i < len_result - leading_zeros; i++)
+	{
+		result_str[i] = result[i + leading_zeros] + '0';
+	}
+
+	result_str[len_result - leading_zeros] = '\0';
+
+	return (result_str);
+}
+
 
 /**
  * multiply - Multiplies two positive numbers
  * @num1: The first number
  * @num2: The second number
  *
- * Return: A pointer to the result
+ * Return: The result of the multiplication
  */
 
-int *multiply(char *num1, char *num2)
+char *multiply(char *num1, char *num2)
 {
-	int len1 = 0, len2 = 0, i, j;
-	int *result, carry = 0, temp;
-	int n1, n2;
+	int len1 = strlen(num1);
+	int len2 = strlen(num2);
+	int len_result = len1 + len2;
+	int *result;
+	char *result_str;
+	int leading_zeros = 0;
 
-	while (num1[len1])
-		len1++;
-	while (num2[len2])
-		len2++;
+	if (len1 == 0 || len2 == 0)
+		return (NULL);
 
-	result = _calloc(len1 + len2, sizeof(int));
+	result = initialize_result(len_result);
 
 	if (result == NULL)
-		exit(98);
+		return (NULL);
 
-	for (i = len1 - 1; i >= 0; i--)
+	perform_multiplication(num1, num2, result, len1, len2);
+
+	while (leading_zeros < len_result - 1 && result[leading_zeros] == 0)
+		leading_zeros++;
+
+	result_str = create_result_string(result, len_result, leading_zeros);
+
+	if (result_str == NULL)
 	{
-		carry = 0;
-		n1 = num1[i] - '0';
-
-		for (j = len2 - 1; j >= 0; j--)
-		{
-			n2 = num2[j] - '0';
-
-			temp = n1 * n2 + result[i + j] + carry;
-			result[i + j] = temp % 10;
-			carry = temp / 10;
-		}
-		result[i + j] += carry;
+		free(result);
+		return (NULL);
 	}
 
-	for (i = 0; result[i] == 0 && i < len1 + len2; i++)
-		continue;
+	free(result);
 
-	return (result);
+	return (result_str);
 }
 
-
 /**
- * main - Multiplies two positive numbers
- * @argc: The number of command line arguments
- * @argv: An array of command line argument strings
+ * main - Entry point for the multiplication program
+ * @argc: The number of command-line arguments
+ * @argv: An array of command-line argument strings
  *
  * Return: 0 on success, 98 on failure
  */
 
 int main(int argc, char *argv[])
 {
+	char *num1 = argv[1];
+	char *num2 = argv[2];
+	char *result = multiply(num1, num2);
 	int i;
-	int *result;
 
-	result = NULL;
-
-	if (argc != 3 || !is_digit(argv[1]) || !is_digit(argv[2]))
+	if (argc != 3 || !is_positive_integer(argv[1])
+		|| !is_positive_integer(argv[2]))
 	{
 		_putchar('E');
 		_putchar('r');
@@ -113,13 +168,25 @@ int main(int argc, char *argv[])
 		_putchar('o');
 		_putchar('r');
 		_putchar('\n');
-		exit(98);
+		return (98);
 	}
 
-	result = multiply(argv[1], argv[2]);
+	if (result == NULL)
+	{
+		_putchar('E');
+		_putchar('r');
+		_putchar('r');
+		_putchar('o');
+		_putchar('r');
+		_putchar('\n');
+		return (98);
+	}
 
-	for (i = 0; result[i]; i++)
-		_putchar(result[i] + '0');
+	for (i = 0; result[i] != '\0'; i++)
+	{
+		_putchar(result[i]);
+	}
+
 	_putchar('\n');
 	free(result);
 
