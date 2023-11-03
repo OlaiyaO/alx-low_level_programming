@@ -13,16 +13,16 @@
  *
  * Description: This function is the swaps 2 pointers holding.
  *		ineger values..
- * @str: The first integer to be swaped.
+ * @s: The first integer to be swaped.
  * Return: void (Success)
  */
 
-void _puts(char *str)
+void _puts(char *s)
 {
-	while (*str)
+	while (*s)
 	{
-		_putchar(*str);
-		str++;
+		_putchar(*s);
+		s++;
 	}
 	_putchar('\n');
 }
