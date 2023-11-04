@@ -4,182 +4,193 @@
 #include <limits.h>
 
 /**
- * str_length - Calculate the length of a string
- * @str: Input pointer to the string
- * Return: Length of the string
+ * _strlen - Finds the length of a string.
+ * @str: The string to be measured.
+ *
+ * Return: The length of the string.
  */
-
-int str_length(char *str)
+int _strlen(char *str)
 {
-	int length = 0;
+	int len = 0;
 
-	while (*str != '\0')
+	while (*str++)
+		len++;
+
+	return (len);
+}
+
+/**
+ * initializeXArray - Creates an array of chars and initializes it with
+ *                   the character 'x'. Adds a terminating null byte.
+ * @size: The size of the array to be initialized.
+ *
+ * Description: If there is insufficient space, the function
+ *              exits with a status of 98.
+ * Return: A pointer to the array.
+ */
+char *initializeXArray(int size)
+{
+	char *array;
+	int index;
+
+	array = malloc(sizeof(char) * size);
+
+	if (array == NULL)
 	{
-		length++;
+		exit(98);
+	}
+
+	for (index = 0; index < (size - 1); index++)
+	{
+		array[index] = 'x';
+	}
+
+	array[index] = '\0';
+
+	return (array);
+}
+
+/**
+ * advancePastZeroes - Iterates through a string of numbers containing
+ *                  leading zeroes until it hits a non-zero number.
+ * @str: The string of numbers to be iterate through.
+ *
+ * Return: A pointer to the next non-zero element.
+ */
+char *advancePastZeroes(char *str)
+{
+	while (*str && *str == '0')
 		str++;
+
+	return (str);
+}
+
+/**
+ * getDigit - Converts a digit character to a corresponding int.
+ * @c: The character to be converted.
+ *
+ * Description: If c is a non-digit, the function
+ *              exits with a status of 98.
+ * Return: The converted int.
+ */
+int getDigit(char c)
+{
+	int digit = c - '0';
+
+	if (digit < 0 || digit > 9)
+	{
+		printf("Error\n");
+		exit(98);
 	}
 
-	return (length);
+	return (digit);
 }
 
 /**
- * allocate_memory - Allocates memory for an array using malloc
- * @element_size: Size of each element
- * @num_elements: Number of elements to allocate
- * Return: Pointer to the allocated memory
+ * calculateProduct - Multiplies a string of numbers by a single digit.
+ * @product: The buffer to store the result.
+ * @multiplier: The string of numbers.
+ * @digit: The single digit.
+ * @zeroes: The necessary number of leading zeroes.
+ *
+ * Description: If multiplier contains a non-digit, the function
+ *              exits with a status value of 98.
  */
 
-void *allocate_memory(unsigned int element_size, unsigned int num_elements)
+void calculateProduct(char *product, char *multiplier, int digit, int zeroes)
 {
-	unsigned int i;
-	char *ptr;
+	int mult_len, num, tens = 0;
 
-	if (element_size == 0 || num_elements == 0)
-		return (NULL);
+	mult_len = _strlen(multiplier) - 1;
+	multiplier += mult_len;
 
-	if (element_size >= UINT_MAX / num_elements || num_elements >= UINT_MAX / element_size)
-		return (NULL);
-
-	ptr = (char *)malloc(element_size * num_elements);
-
-	if (ptr == NULL)
-		return (NULL);
-
-	for (i = 0; i < element_size * num_elements; i++)
-		ptr[i] = 0;
-
-	return ((void *)ptr);
-}
-
-/**
- * add_arrays - Adds two arrays of integers
- * @product_array: Pointer to the array with numbers from product
- * @sum_array: Pointer to the array with numbers from total sum
- * @array_length: Length of both arrays
- * Return: void
- */
-
-void add_arrays(int *product_array, int *sum_array, int array_length)
-{
-	int i = 0, last_index = array_length - 1, carry = 0, sum;
-
-	while (i < array_length)
+	while (*product)
 	{
-		sum = carry + product_array[last_index] + sum_array[last_index];
-		sum_array[last_index] = sum % 10;
-		carry = sum / 10;
-		i++;
-		last_index--;
+		*product = 'x';
+		product++;
 	}
-}
 
-/**
- * is_digit - Checks if a character is a digit
- * @c: Input character to check
- * Return: 0 (failure), 1 (success)
- */
+	product--;
 
-int is_digit(char c)
-{
-	if (c >= '0' && c <= '9')
-		return 1;
-
-	printf("Error\n");
-	return (0);
-}
-
-/**
- * multiply_numbers - Multiplies two numbers, prints result
- * @smaller_num: Factor 1 (the smaller of the two numbers)
- * @smaller_num_length: Length of factor 1
- * @larger_num: Factor 2 (the larger of the two numbers)
- * @larger_num_length: Length of factor 2
- * @result_length: Length of result arrays
- * Return: 0 (failure), 1 (success)
- */
-
-int *multiply_numbers(char *smaller_num, int smaller_num_length, char *larger_num, int larger_num_length, int result_length)
-{
-	int i = 0, smaller_index = smaller_num_length - 1;
-	int larger_index, product, carry, digit;
-	int *product_array, *sum_array;
-
-	sum_array = allocate_memory(sizeof(int), result_length);
-
-	while (i < smaller_num_length)
+	while (zeroes--)
 	{
-		product_array = allocate_memory(sizeof(int), result_length);
-		larger_index = larger_num_length - 1;
-		digit = (result_length - 1 - i);
+		*product = '0';
+		product--;
+	}
 
-		if (!is_digit(smaller_num[smaller_index]))
-			return (NULL);
-
-		carry = 0;
-
-		while (larger_index >= 0)
+	for (; mult_len >= 0; mult_len--, multiplier--, product--)
+	{
+		if (*multiplier < '0' || *multiplier > '9')
 		{
-			if (!is_digit(larger_num[larger_index]))
-				return (NULL);
-
-			product = (smaller_num[smaller_index] - '0') * (larger_num[larger_index] - '0');
-			product += carry;
-			product_array[digit] += product % 10;
-			carry = product / 10;
-			digit--;
-			larger_index--;
+			printf("Error\n");
+			exit(98);
 		}
 
-		add_arrays(product_array, sum_array, result_length);
-		free(product_array);
-		i++;
-		smaller_index--;
+		num = (*multiplier - '0') * digit;
+		num += tens;
+		*product = (num % 10) + '0';
+		tens = num / 10;
 	}
 
-	return (sum_array);
+	if (tens)
+		*product = (tens % 10) + '0';
 }
 
 /**
- * print_result - Prints the result array
- * @result_array: Pointer to an integer array with numbers to add
- * @result_length: Length of the result array
- * Return: void
+ * addNumbers - Adds the numbers stored in two strings.
+ * @finalProduct: The buffer storing the running final product.
+ * @nextProduct: The next product to be added.
+ * @nextLength: The length of nextProduct.
  */
-
-void print_result(int *result_array, int result_length)
+void addNumbers(char *finalProduct, char *nextProduct, int nextLength)
 {
-	int i = 0;
+	int num, tens = 0;
 
-	while (result_array[i] == 0 && i < result_length)
+	while (*(finalProduct + 1))
+		finalProduct++;
+
+	while (*(nextProduct + 1))
+		nextProduct++;
+
+	for (; *finalProduct != 'x'; finalProduct--)
 	{
-		i++;
+		num = (*finalProduct - '0') + (*nextProduct - '0');
+		num += tens;
+		*finalProduct = (num % 10) + '0';
+		tens = num / 10;
+
+		nextProduct--;
+		nextLength--;
 	}
 
-	if (i == result_length)
+	for (; nextLength >= 0 && *nextProduct != 'x'; nextLength--)
 	{
-		putchar('0');
+		num = (*nextProduct - '0');
+		num += tens;
+		*finalProduct = (num % 10) + '0';
+		tens = num / 10;
+
+		finalProduct--;
+		nextProduct--;
 	}
 
-	while (i < result_length)
-	{
-		putchar(result_array[i++] + '0');
-	}
-
-	putchar('\n');
+	if (tens)
+		*finalProduct = (tens % 10) + '0';
 }
 
 /**
- * main - Multiplies two input numbers of large lengths and prints the result or an error
- * @argc: Input count of arguments
- * @argv: Input array of string arguments
- * Return: 0 (Success)
+ * main - Multiplies two positive numbers.
+ * @argc: The number of arguments passed to the program.
+ * @argv: An array of pointers to the arguments.
+ *
+ * Description: If the number of arguments is incorrect or one number
+ *              contains non-digits, the function exits with a status of 98.
+ * Return: Always 0.
  */
-
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
-	int smaller_num_length, larger_num_length, result_length, temp;
-	int *result_array;
-	char *smaller_num, *larger_num;
+	char *finalProduct, *nextProduct;
+	int size, index, digit, zeroes = 0;
 
 	if (argc != 3)
 	{
@@ -187,30 +198,36 @@ int main(int argc, char **argv)
 		exit(98);
 	}
 
-	smaller_num_length = str_length(argv[1]);
-	larger_num_length = str_length(argv[2]);
-	result_length = smaller_num_length + larger_num_length;
-
-	if (smaller_num_length < larger_num_length)
+	if (*(argv[1]) == '0')
+		argv[1] = advancePastZeroes(argv[1]);
+	if (*(argv[2]) == '0')
+		argv[2] = advancePastZeroes(argv[2]);
+	if (*(argv[1]) == '\0' || *(argv[2]) == '\0')
 	{
-		smaller_num = argv[1];
-		larger_num = argv[2];
-	}
-	else
-	{
-		smaller_num = argv[2];
-		larger_num = argv[1];
-		temp = larger_num_length;
-		larger_num_length = smaller_num_length;
-		smaller_num_length = temp;
+		printf("0\n");
+		return (0);
 	}
 
-	result_array = multiply_numbers(smaller_num, smaller_num_length, larger_num, larger_num_length, result_length);
+	size = _strlen(argv[1]) + _strlen(argv[2]);
+	finalProduct = initializeXArray(size + 1);
+	nextProduct = initializeXArray(size + 1);
 
-	if (result_array == NULL)
-		exit(98);
+	for (index = _strlen(argv[2]) - 1; index >= 0; index--)
+	{
+		digit = getDigit(*(argv[2] + index));
+		calculateProduct(nextProduct, argv[1], digit, zeroes++);
+		addNumbers(finalProduct, nextProduct, size - 1);
+	}
+	for (index = 0; finalProduct[index]; index++)
+	{
+		if (finalProduct[index] != 'x')
+			putchar(finalProduct[index]);
+	}
+	putchar('\n');
 
-	print_result(result_array, result_length);
+	free(nextProduct);
+	free(finalProduct);
+
 	return (0);
 }
 
