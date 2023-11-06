@@ -4,12 +4,12 @@
 #include <limits.h>
 
 /**
- * _strlen - Finds the length of a string.
+ * findLength - Finds the length of a string.
  * @str: The string to be measured.
  *
  * Return: The length of the string.
  */
-int _strlen(char *str)
+int findLength(char *str)
 {
 	int len = 0;
 
@@ -96,12 +96,11 @@ int getDigit(char c)
  * Description: If multiplier contains a non-digit, the function
  *              exits with a status value of 98.
  */
-
 void calculateProduct(char *product, char *multiplier, int digit, int zeroes)
 {
 	int mult_len, num, tens = 0;
 
-	mult_len = _strlen(multiplier) - 1;
+	mult_len = findLength(multiplier) - 1;
 	multiplier += mult_len;
 
 	while (*product)
@@ -183,8 +182,10 @@ void addNumbers(char *finalProduct, char *nextProduct, int nextLength)
  * @argc: The number of arguments passed to the program.
  * @argv: An array of pointers to the arguments.
  *
- * Description: If the number of arguments is incorrect or one number
- *              contains non-digits, the function exits with a status of 98.
+ * Description: If the number of arguments is incorrect, or if
+ * either num1 or num2 is not composed of digits, or if either
+ * num1 or num2 is not greater than zero, the function exits with
+ * a status of 98.
  * Return: Always 0.
  */
 int main(int argc, char *argv[])
@@ -198,21 +199,23 @@ int main(int argc, char *argv[])
 		exit(98);
 	}
 
-	if (*(argv[1]) == '0')
-		argv[1] = advancePastZeroes(argv[1]);
-	if (*(argv[2]) == '0')
-		argv[2] = advancePastZeroes(argv[2]);
-	if (*(argv[1]) == '\0' || *(argv[2]) == '\0')
+	if (*(argv[1]) == '0' || *argv[2] == '0')
+	{
+		printf("Error\n");
+		exit(98);
+	}
+
+	if (*argv[1] == '\0' || *argv[2] == '\0')
 	{
 		printf("0\n");
 		return (0);
 	}
 
-	size = _strlen(argv[1]) + _strlen(argv[2]);
+	size = findLength(argv[1]) + findLength(argv[2]);
 	finalProduct = initializeXArray(size + 1);
 	nextProduct = initializeXArray(size + 1);
 
-	for (index = _strlen(argv[2]) - 1; index >= 0; index--)
+	for (index = findLength(argv[2]) - 1; index >= 0; index--)
 	{
 		digit = getDigit(*(argv[2] + index));
 		calculateProduct(nextProduct, argv[1], digit, zeroes++);

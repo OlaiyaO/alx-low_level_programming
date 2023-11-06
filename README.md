@@ -1,2 +1,1 @@
-# alx-low_level_programming
-This is the repository containing our starting c files.
+README.md for 0x0E-structures_typedef
