@@ -26,15 +26,17 @@ int main(int argc, char *argv[])
 		exit(2);
 	}
 
-	char *main_address = (char *)main;
+	unsigned char *main_address = (unsigned char *)main;
 	int i;
 
-	for (i = 0; i < bytes - 1; i++)
+	for (i = 0; i < bytes; i++)
 	{
-		printf("%02x ", main_address[i]);
+		printf("%02x", main_address[i]);
+		if (i < bytes - 1)
+			printf(" ");
 	}
 
-	printf("%02x\n", main_address[i]);
+	printf("\n");
 
 	return (0);
 }
