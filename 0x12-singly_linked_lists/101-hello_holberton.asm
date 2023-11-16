@@ -1,13 +1,13 @@
 section .data
-hello db "Hello, Holberton", 10
+format db "Hello, Holberton", 10
 
 section .text
 global main
 extern printf
 
 main:
-mov edi, hello
-mov eax, 0
+mov edi, format
+xor eax, eax
 call printf
 
 mov eax, 60
