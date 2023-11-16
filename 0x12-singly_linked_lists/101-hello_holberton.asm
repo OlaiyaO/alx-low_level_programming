@@ -1,15 +1,16 @@
 section .data
-format db "Hello, Holberton", 10
+msg db "Hello, Holberton", 0
+fmt db "%s", 10, 0
 
 section .text
 global main
 extern printf
 
 main:
-mov edi, format
-xor eax, eax
+mov rdi, fmt
+mov rsi, msg
+mov eax, 0
 call printf
 
-mov eax, 60
-xor edi, edi
-syscall
+mov eax, 0
+ret
