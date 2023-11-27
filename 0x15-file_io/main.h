@@ -31,11 +31,8 @@ void print_elf_header(Elf64_Ehdr *header);
 
 void error_exit(const char *msg);
 
-int check_arguments(int ac, char **av);
+void errexit(const char *str, const char *file, int code);
 
-int open_source_file(const char *filename);
+void copy_file(const char *src_file, const char *dest_file);
 
-int open_destination_file(const char *filename);
-
-int copy_file_contents(int fd_from, int fd_to);
 #endif /* MAIN_H */
