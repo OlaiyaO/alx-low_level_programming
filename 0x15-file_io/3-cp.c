@@ -28,7 +28,8 @@ void copy_file(const char *src_file, const char *dest_file)
 	if (fd_src == -1)
 		errexit("Error: Can't read from file %s\n", src_file, 98);
 
-	fd_dest = open(dest_file, O_CREAT | O_WRONLY | O_TRUNC, 0664);
+	fd_dest = open(dest_file, O_CREAT | O_WRONLY | O_TRUNC,
+			S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
 	if (fd_dest == -1)
 		errexit("Error: Can't write to %s\n", dest_file, 99);
 
@@ -75,3 +76,4 @@ int main(int argc, char *argv[])
 
 	return (0);
 }
+
