@@ -21,7 +21,8 @@ void errexit(const char *str, const char *file, int code)
 
 void copy_file(const char *src_file, const char *dest_file)
 {
-	int fd_src, fd_dest, num_read, num_write;
+	int fd_src, fd_dest;
+	ssize_t num_read, num_write;
 	char buffer[BUFSIZ];
 
 	fd_src = open(src_file, O_RDONLY);
@@ -31,22 +32,33 @@ void copy_file(const char *src_file, const char *dest_file)
 	fd_dest = open(dest_file, O_CREAT | O_WRONLY | O_TRUNC,
 			S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
 	if (fd_dest == -1)
+	{
+		close(fd_src);
 		errexit("Error: Can't write to %s\n", dest_file, 99);
+	}
 
 	while ((num_read = read(fd_src, buffer, BUFSIZ)) > 0)
 	{
 		num_write = write(fd_dest, buffer, num_read);
-
-		if (num_write == -1 || num_write != num_read)
+		if (num_write != num_read)
+		{
+			close(fd_src);
+			close(fd_dest);
 			errexit("Error: Can't write to %s\n", dest_file, 99);
+		}
 	}
 
 	if (num_read == -1)
+	{
+		close(fd_src);
+		close(fd_dest);
 		errexit("Error: Can't read from file %s\n", src_file, 98);
+	}
 
 	if (close(fd_dest) == -1 || close(fd_src) == -1)
 	{
-		dprintf(STDERR_FILENO, "Error: Can't close file descriptors\n");
+		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n",
+				(close(fd_dest) == -1) ? fd_dest : fd_src);
 		exit(100);
 	}
 }
@@ -55,7 +67,7 @@ void copy_file(const char *src_file, const char *dest_file)
  * main - entry point
  * @argc: argument count
  * @argv: array of argument tokens
- * Return: 0 on success
+ * Return: (0) on success
  */
 
 int main(int argc, char *argv[])
@@ -70,3 +82,4 @@ int main(int argc, char *argv[])
 
 	return (0);
 }
+
