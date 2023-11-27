@@ -33,13 +33,8 @@ void copy_file(const char *src_file, const char *dest_file)
 	if (fd_dest == -1)
 		errexit("Error: Can't write to %s\n", dest_file, 99);
 
-	num_read = BUFSIZ;
-	while (num_read == BUFSIZ)
+	while ((num_read = read(fd_src, buffer, BUFSIZ)) > 0)
 	{
-		num_read = read(fd_src, buffer, BUFSIZ);
-		if (num_read == -1)
-			errexit("Error: Can't read from file %s\n", src_file, 98);
-
 		num_write = write(fd_dest, buffer, num_read);
 
 		if (num_write == -1 || num_write != num_read)
@@ -51,8 +46,7 @@ void copy_file(const char *src_file, const char *dest_file)
 
 	if (close(fd_dest) == -1 || close(fd_src) == -1)
 	{
-		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n",
-				(close(fd_dest) == -1) ? fd_dest : fd_src);
+		dprintf(STDERR_FILENO, "Error: Can't close file descriptors\n");
 		exit(100);
 	}
 }
@@ -76,4 +70,3 @@ int main(int argc, char *argv[])
 
 	return (0);
 }
-
