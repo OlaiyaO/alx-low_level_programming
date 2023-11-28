@@ -37,6 +37,10 @@ void errexit(const char *str, const char *file, int code);
 
 void copy_file(const char *src_file, const char *dest_file);
 
+int *open_files(const char *src_file, const char *dest_file);
+
+void close_files(int *fds);
+
 void checkElfMagicAndExitOnError(unsigned char *ident);
 
 void displayMagicNumbers(unsigned char *ident);

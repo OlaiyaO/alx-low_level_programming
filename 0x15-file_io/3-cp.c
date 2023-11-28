@@ -5,6 +5,8 @@
  * @str: error message format
  * @file: file name
  * @code: exit code
+ *
+ * Return: does not return
  */
 
 void errexit(const char *str, const char *file, int code)
@@ -14,60 +16,100 @@ void errexit(const char *str, const char *file, int code)
 }
 
 /**
+ * open_files - open source and destination files and handle errors
+ * @src_file: source file name
+ * @dest_file: destination file name
+ *
+ * Return: an array of two integers [fd_src, fd_dest]
+ */
+
+int *open_files(const char *src_file, const char *dest_file)
+{
+	int *fds = malloc(sizeof(int) * 2);
+
+	if (!fds)
+		errexit("Error: Memory allocation error\n", "", 1);
+
+	fds[0] = open(src_file, O_RDONLY);
+	if (fds[0] == -1)
+		errexit("Error: Can't read from file %s\n", src_file, 98);
+
+	fds[1] = open(dest_file, O_CREAT | O_WRONLY | O_TRUNC,
+			S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+	if (fds[1] == -1)
+	{
+		close(fds[0]);
+		errexit("Error: Can't write to %s\n", dest_file, 99);
+	}
+
+	return (fds);
+}
+
+/**
+ * close_files - close source and destination files and handle errors
+ * @fds: an array of two integers [fd_src, fd_dest]
+ *
+ * Return: does not return
+ */
+
+void close_files(int *fds)
+{
+	if (close(fds[1]) == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fds[1]);
+		exit(100);
+	}
+
+	if (close(fds[0]) == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n", fds[0]);
+		exit(100);
+	}
+
+	free(fds);
+}
+
+/**
  * copy_file - copy content from source to destination file
  * @src_file: source file
  * @dest_file: destination file
+ *
+ * Return: does not return
  */
 
 void copy_file(const char *src_file, const char *dest_file)
 {
-	int fd_src, fd_dest;
-	ssize_t num_read, num_write;
 	char buffer[BUFSIZ];
+	ssize_t num_read, num_write;
 
-	fd_src = open(src_file, O_RDONLY);
-	if (fd_src == -1)
-		errexit("Error: Can't read from file %s\n", src_file, 98);
+	int *fds = open_files(src_file, dest_file);
 
-	fd_dest = open(dest_file, O_CREAT | O_WRONLY | O_TRUNC,
-			S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
-	if (fd_dest == -1)
+	while ((num_read = read(fds[0], buffer, BUFSIZ)) > 0)
 	{
-		close(fd_src);
-		errexit("Error: Can't write to %s\n", dest_file, 99);
-	}
+		num_write = write(fds[1], buffer, num_read);
 
-	while ((num_read = read(fd_src, buffer, BUFSIZ)) > 0)
-	{
-		num_write = write(fd_dest, buffer, num_read);
 		if (num_write != num_read)
 		{
-			close(fd_src);
-			close(fd_dest);
+			close_files(fds);
 			errexit("Error: Can't write to %s\n", dest_file, 99);
 		}
 	}
 
 	if (num_read == -1)
 	{
-		close(fd_src);
-		close(fd_dest);
+		close_files(fds);
 		errexit("Error: Can't read from file %s\n", src_file, 98);
 	}
 
-	if (close(fd_dest) == -1 || close(fd_src) == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't close fd %d\n",
-				(close(fd_dest) == -1) ? fd_dest : fd_src);
-		exit(100);
-	}
+	close_files(fds);
 }
 
 /**
  * main - entry point
  * @argc: argument count
  * @argv: array of argument tokens
- * Return: (0) on success
+ *
+ * Return: 0 on success
  */
 
 int main(int argc, char *argv[])
@@ -82,4 +124,3 @@ int main(int argc, char *argv[])
 
 	return (0);
 }
-
