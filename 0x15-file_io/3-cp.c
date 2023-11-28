@@ -79,12 +79,12 @@ void close_files(int *fds)
 
 void copy_file(const char *src_file, const char *dest_file)
 {
-	char buffer[BUFSIZ];
+	char buffer[1024];
 	ssize_t num_read, num_written;
 
 	int *fds = open_files(src_file, dest_file);
 
-	while ((num_read = read(fds[0], buffer, BUFSIZ)) > 0)
+	while ((num_read = read(fds[0], buffer, 1024)) > 0)
 	{
 		ssize_t total_written = 0;
 
@@ -119,7 +119,6 @@ void copy_file(const char *src_file, const char *dest_file)
  *
  * Return: 0 on success
  */
-
 int main(int argc, char *argv[])
 {
 	if (argc != 3)
