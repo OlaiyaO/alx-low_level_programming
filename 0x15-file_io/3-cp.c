@@ -80,18 +80,26 @@ void close_files(int *fds)
 void copy_file(const char *src_file, const char *dest_file)
 {
 	char buffer[BUFSIZ];
-	ssize_t num_read, num_write;
+	ssize_t num_read, num_written;
 
 	int *fds = open_files(src_file, dest_file);
 
 	while ((num_read = read(fds[0], buffer, BUFSIZ)) > 0)
 	{
-		num_write = write(fds[1], buffer, num_read);
+		ssize_t total_written = 0;
 
-		if (num_write != num_read)
+		while (total_written < num_read)
 		{
-			close_files(fds);
-			errexit("Error: Can't write to %s\n", dest_file, 99);
+			num_written =
+				write(fds[1], buffer + total_written, num_read - total_written);
+
+			if (num_written <= 0)
+			{
+				close_files(fds);
+				errexit("Error: Can't write to %s\n", dest_file, 99);
+			}
+
+			total_written += num_written;
 		}
 	}
 
