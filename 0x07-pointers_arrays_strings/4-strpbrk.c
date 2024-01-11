@@ -1,35 +1,28 @@
-/*
- * File: 1-main.c
- * Author: Oniya Olaiya
- * Description: This program changes the value pointed to by n.
- *
- */
-
 #include "main.h"
-#include <stdio.h>
-
+#include <stddef.h>
 /**
- * _strpbrk - Entry point of the program.
+ * _strpbrk - Searches a string for any of a set of bytes.
+ * @s: The string to search.
+ * @accept: The set of bytes to search for.
  *
- * Description: This function is the entry point for the program.
- *		It calls the print_sign function to do the checks.
- * @s: The destination memory location.
- * @accept: The source memory location.
- * Return: Always 0 (Success)
+ * Return: A pointer to the byte in s that matches one of the bytes in accept,
+ * or NULL if no such byte is found.
  */
 
 char *_strpbrk(char *s, char *accept)
 {
-	char *a = accept;
-	
-	if (*s == '\0')
-		return (NULL);
-	
-	while (*a)
+	while (*s)
 	{
-		if (*s == *a)
-			return (s);
-		a++;
+		char *a = accept;
+
+		while (*a)
+		{
+			if (*s == *a)
+				return (s);
+			a++;
+		}
+		s++;
 	}
-	return (_strpbrk(s + 1, accept));
+	return (NULL);
 }
+

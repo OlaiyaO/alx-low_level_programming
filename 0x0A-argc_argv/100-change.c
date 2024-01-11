@@ -2,47 +2,51 @@
 #include <stdlib.h>
 
 /**
- * main - Entry point
+ * main - Calculates the minimum number of coins to make change.
+ * @argc: Number of arguments.
+ * @argv: Array of arguments (expecting one integer argument).
  *
- * @argc: The number of command line arguments
- * @argv: An array containing the command line arguments
- *
- * Description: This program calculates the minimum number of coins needed
- * to make change for a given amount of cents using a set of coin values.
- *
- * Return: 0 if successful, 1 for errors or if the number of cents is negative.
+ * Return: Always 0.
  */
-
 int main(int argc, char *argv[])
 {
-	int cents, count, num_coins;
-	int coins[] = {25, 10, 5, 2, 1};
-
-	cents = atoi(argv[1]);
-
-	num_coins = sizeof(coins) / sizeof(coins[0]);
-	count = 0;
+	int amount = 0;
+	int coins = 0;
+	char error_message[] = "Error";
 
 	if (argc != 2)
 	{
-		printf("Error\n");
+		printf("%s\n", error_message);
 		return (1);
 	}
-	
-	if (cents < 0)
+
+	amount = atoi(argv[1]);
+
+	while (amount >= 25)
 	{
-		printf("0\n");
-		return (0);
+		amount -= 25;
+		coins++;
 	}
-	for (int i = 0; i < num_coins; i++)
+	while (amount >= 10)
 	{
-		while (cents >= coins[i])
-		{
-			cents -= coins[i];
-			count++;
-		}
+		amount -= 10;
+		coins++;
 	}
-	printf("%d\n", count);
+	while (amount >= 5)
+	{
+		amount -= 5;
+		coins++;
+	}
+	while (amount >= 2)
+	{
+		amount -= 2;
+		coins++;
+	}
+	if (amount == 1)
+		coins++;
+
+	printf("%d\n", coins);
+
 	return (0);
 }
 
