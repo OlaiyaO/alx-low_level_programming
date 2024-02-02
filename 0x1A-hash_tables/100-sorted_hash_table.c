@@ -11,12 +11,17 @@
  */
 shash_table_t *shash_table_create(unsigned long int size)
 {
+	if(size == 0)
+		return NULL;
+
 	shash_table_t *ht = malloc(sizeof(shash_table_t));
+
 	if (ht == NULL)
 		return (NULL);
 
 	ht->size = size;
 	ht->array = calloc(size, sizeof(shash_node_t *));
+
 	if (ht->array == NULL)
 	{
 		free(ht);
@@ -41,6 +46,7 @@ int shash_table_set(shash_table_t *ht, const char *key, const char *value)
 {
 	unsigned long int index;
 	shash_node_t *new_node, *current;
+	char *new_value;
 
 	if (ht == NULL || key == NULL || *key == '\0' || value == NULL)
 		return (0);
@@ -52,22 +58,29 @@ int shash_table_set(shash_table_t *ht, const char *key, const char *value)
 	{
 		if (strcmp(current->key, key) == 0)
 		{
+			new_value = strdup(value);
+			
+			if (new_value == NULL)
+			{
+				shash_table_delete(ht);
+				return (0)
+			}
 			free(current->value);
 			current->value = strdup(value);
+
 			if (current->value == NULL)
 				return (0);
 			return (1);
 		}
 		current = current->next;
 	}
-
 	new_node = create_new_node(key, value);
+
 	if (new_node == NULL)
 		return (0);
 
 	insert_sorted_node(ht, new_node);
 	ht->array[index] = new_node;
-
 	return (1);
 }
 
@@ -120,6 +133,7 @@ void shash_table_print(const shash_table_t *ht)
 	while (current != NULL)
 	{
 		printf("'%s': '%s'", current->key, current->value);
+
 		if (current->snext != NULL)
 			printf(", ");
 		current = current->snext;
@@ -145,6 +159,7 @@ void shash_table_print_rev(const shash_table_t *ht)
 	while (current != NULL)
 	{
 		printf("'%s': '%s'", current->key, current->value);
+
 		if (current->sprev != NULL)
 			printf(", ");
 		current = current->sprev;
@@ -189,10 +204,12 @@ void shash_table_delete(shash_table_t *ht)
 shash_node_t *create_new_node(const char *key, const char *value)
 {
 	shash_node_t *new_node = malloc(sizeof(shash_node_t));
+
 	if (new_node == NULL)
 		return (NULL);
 
 	new_node->key = strdup(key);
+
 	if (new_node->key == NULL)
 	{
 		free(new_node);
@@ -200,6 +217,7 @@ shash_node_t *create_new_node(const char *key, const char *value)
 	}
 
 	new_node->value = strdup(value);
+
 	if (new_node->value == NULL)
 	{
 		free(new_node->key);
