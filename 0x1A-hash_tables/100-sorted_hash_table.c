@@ -11,10 +11,10 @@
  */
 shash_table_t *shash_table_create(unsigned long int size)
 {
+	shash_table_t *ht = malloc(sizeof(shash_table_t));
+
 	if(size == 0)
 		return NULL;
-
-	shash_table_t *ht = malloc(sizeof(shash_table_t));
 
 	if (ht == NULL)
 		return (NULL);
@@ -63,7 +63,7 @@ int shash_table_set(shash_table_t *ht, const char *key, const char *value)
 			if (new_value == NULL)
 			{
 				shash_table_delete(ht);
-				return (0)
+				return (0);
 			}
 			free(current->value);
 			current->value = strdup(value);
