@@ -100,7 +100,7 @@ int shash_table_set(shash_table_t *ht, const char *key, const char *value)
 	ht->array[index] = new_node;
 	return (1);
 }
-	
+
 /**
  * shash_table_get - Retrieves a value associated with
  * a key from the sorted hash table
@@ -250,40 +250,41 @@ shash_node_t *create_new_node(const char *key, const char *value)
  * @ht: The sorted hash table
  * @new_node: The node to insert
  */
+
 void insert_sorted_node(shash_table_t *ht, shash_node_t *new_node)
 {
-	shash_node_t *current;
+        shash_node_t *current;
 
-	if (ht->shead == NULL)
-	{
-		ht->shead = new_node;
-		ht->stail = new_node;
-	}
-	else
-	{
-		current = ht->shead;
+        if (ht->shead == NULL)
+        {
+                ht->shead = new_node;
+                ht->stail = new_node;
+        }
+        else
+        {
+                current = ht->shead;
 
-		while (current != NULL && strcmp(current->key, new_node->key) < 0)
-		{
-			current = current->snext;
-		}
+                while (current != NULL && strcmp(current->key, new_node->key) < 0)
+                {
+                        current = current->snext;
+                }
 
-		if (current == NULL)
-		{
-			new_node->sprev = ht->stail;
-			ht->stail->snext = new_node;
-			ht->stail = new_node;
-		}
-		else
-		{
-			if (current->sprev != NULL)
-				current->sprev->snext = new_node;
-			else
-				ht->shead = new_node;
+                if (current == NULL)
+                {
+                        new_node->sprev = ht->stail;
+                        ht->stail->snext = new_node;
+                        ht->stail = new_node;
+                }
+                else
+                {
+                        if (current->sprev != NULL)
+                                current->sprev->snext = new_node;
+                        else
+                                ht->shead = new_node;
 
-			new_node->sprev = current->sprev;
-			new_node->snext = current;
-			current->sprev = new_node;
-		}
-	}
+                        new_node->sprev = current->sprev;
+                        new_node->snext = current;
+                        current->sprev = new_node;
+                }
+        }
 }
