@@ -67,8 +67,7 @@ int shash_table_set(shash_table_t *ht, const char *key, const char *value)
 		return (1);
 	}
 
-	while (current != NULL)
-	{
+	while (current != NULL) {
 		if (strcmp(current->key, key) == 0)
 		{
 			new_value = strdup(value);
@@ -97,27 +96,7 @@ int shash_table_set(shash_table_t *ht, const char *key, const char *value)
 	if (new_node == NULL)
 		return (0);
 
-	if (strcmp(ht->shead->key, key) > 0)
-	{
-		new_node->sprev = NULL;
-		new_node->snext = ht->shead;
-		ht->shead->sprev = new_node;
-		ht->shead = new_node;
-	}
-	else
-	{
-		current = ht->shead;
-		while (current->snext != NULL && strcmp(current->snext->key, key) < 0)
-			current = current->snext;
-		new_node->sprev = current;
-		new_node->snext = current->snext;
-		if (current->snext == NULL)
-			ht->stail = new_node;
-		else
-			current->snext->sprev = new_node;
-		current->snext = new_node;
-	}
-
+	insert_sorted_node(ht, new_node);
 	ht->array[index] = new_node;
 	return (1);
 }
@@ -135,8 +114,7 @@ int shash_table_set(shash_table_t *ht, const char *key, const char *value)
 char *shash_table_get(const shash_table_t *ht, const char *key)
 {
 	unsigned long int index;
-	shash_node_t *current;
-
+	shash_node_t *current; 
 	if (ht == NULL || key == NULL || *key == '\0')
 		return NULL;
 
