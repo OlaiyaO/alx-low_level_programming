@@ -54,36 +54,74 @@ int shash_table_set(shash_table_t *ht, const char *key, const char *value)
 	index = key_index((const unsigned char *)key, ht->size);
 	current = ht->array[index];
 
+	if (ht->shead == NULL)
+	{
+		new_node = create_new_node(key, value);
+
+		if (new_node == NULL)
+			return (0);
+
+		ht->shead = new_node;
+		ht->stail = new_node;
+		ht->array[index] = new_node;
+		return (1);
+	}
+
 	while (current != NULL)
 	{
 		if (strcmp(current->key, key) == 0)
 		{
 			new_value = strdup(value);
-			
+
 			if (new_value == NULL)
 			{
 				shash_table_delete(ht);
 				return (0);
 			}
+
 			free(current->value);
-			current->value = strdup(value);
+			current->value = new_value;
 
 			if (current->value == NULL)
+			{
+				shash_table_delete(ht);
 				return (0);
+			}
 			return (1);
 		}
 		current = current->next;
 	}
+
 	new_node = create_new_node(key, value);
 
 	if (new_node == NULL)
 		return (0);
 
-	insert_sorted_node(ht, new_node);
+	if (strcmp(ht->shead->key, key) > 0)
+	{
+		new_node->sprev = NULL;
+		new_node->snext = ht->shead;
+		ht->shead->sprev = new_node;
+		ht->shead = new_node;
+	}
+	else
+	{
+		current = ht->shead;
+		while (current->snext != NULL && strcmp(current->snext->key, key) < 0)
+			current = current->snext;
+		new_node->sprev = current;
+		new_node->snext = current->snext;
+		if (current->snext == NULL)
+			ht->stail = new_node;
+		else
+			current->snext->sprev = new_node;
+		current->snext = new_node;
+	}
+
 	ht->array[index] = new_node;
 	return (1);
 }
-
+	
 /**
  * shash_table_get - Retrieves a value associated with
  * a key from the sorted hash table
