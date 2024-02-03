@@ -3,22 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-shash_table_t *shash_table_create(unsigned long int size);
-
-int shash_table_set(shash_table_t *ht, const char *key, const char *value);
-
-char *shash_table_get(const shash_table_t *ht, const char *key);
-
-void shash_table_print(const shash_table_t *ht);
-
-void shash_table_print_rev(const shash_table_t *ht);
-
-void shash_table_delete(shash_table_t *ht);
-
-shash_node_t *create_new_node(const char *key, const char *value);
-
-void insert_sorted_node(shash_table_t *ht, shash_node_t *new_node);
-
 /**
  * shash_table_create - Creates a sorted hash table
  * @size: The size of the array
@@ -72,7 +56,7 @@ int shash_table_set(shash_table_t *ht, const char *key, const char *value)
 
 	if (ht->shead == NULL)
 	{
-		new_node = create_new_node(key, value);
+		new_node = create_sorted_node(key, value);
 
 		if (new_node == NULL)
 			return (0);
@@ -107,7 +91,7 @@ int shash_table_set(shash_table_t *ht, const char *key, const char *value)
 		current = current->next;
 	}
 
-	new_node = create_new_node(key, value);
+	new_node = create_sorted_node(key, value);
 
 	if (new_node == NULL)
 		return (0);
@@ -228,7 +212,7 @@ void shash_table_delete(shash_table_t *ht)
  *
  * Return: A pointer to the newly created node, or NULL on failure
  */
-shash_node_t *create_new_node(const char *key, const char *value)
+shash_node_t *create_sorted_node(const char *key, const char *value)
 {
 	shash_node_t *new_node = malloc(sizeof(shash_node_t));
 
