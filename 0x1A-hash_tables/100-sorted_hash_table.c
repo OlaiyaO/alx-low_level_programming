@@ -138,20 +138,15 @@ char *shash_table_get(const shash_table_t *ht, const char *key)
 	shash_node_t *current;
 
 	if (ht == NULL || key == NULL || *key == '\0')
-		return (NULL);
+		return NULL;
 
 	index = key_index((const unsigned char *)key, ht->size);
 	current = ht->array[index];
 
-	while (current != NULL)
-	{
-		if (strcmp(current->key, key) == 0)
-			return (current->value);
-
+	while (current != NULL && strcmp(current->key, key) != 0)
 		current = current->next;
-	}
 
-	return (NULL);
+	return (current == NULL) ? NULL : current->value;
 }
 
 /**
