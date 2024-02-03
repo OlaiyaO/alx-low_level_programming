@@ -103,6 +103,4 @@ void shash_table_delete(shash_table_t *ht);
 
 shash_node_t *create_new_node(const char *key, const char *value);
 
-void insert_sorted_node(shash_table_t *ht, shash_node_t *new_node);
-
 #endif /* HASH_TABLES_H */

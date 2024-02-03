@@ -45,8 +45,7 @@ shash_table_t *shash_table_create(unsigned long int size)
 int shash_table_set(shash_table_t *ht, const char *key, const char *value)
 {
 	unsigned long int index;
-	shash_node_t *new_node, *current;
-	char *new_value;
+	shash_node_t *new_node, *current, *prev = NULL;
 
 	if (ht == NULL || key == NULL || *key == '\0' || value == NULL)
 		return (0);
@@ -54,41 +53,23 @@ int shash_table_set(shash_table_t *ht, const char *key, const char *value)
 	index = key_index((const unsigned char *)key, ht->size);
 	current = ht->array[index];
 
-	if (ht->shead == NULL)
+	while (current != NULL && strcmp(current->key, key) < 0)
 	{
-		new_node = create_new_node(key, value);
-
-		if (new_node == NULL)
-			return (0);
-
-		ht->shead = new_node;
-		ht->stail = new_node;
-		ht->array[index] = new_node;
-		return (1);
+		prev = current;
+		current = current->next;
 	}
 
-	while (current != NULL) {
-		if (strcmp(current->key, key) == 0)
+	if (current != NULL && strcmp(current->key, key) == 0)
+	{
+		free(current->value);
+		current->value = strdup(value);
+
+		if (current->value == NULL)
 		{
-			new_value = strdup(value);
-
-			if (new_value == NULL)
-			{
-				shash_table_delete(ht);
-				return (0);
-			}
-
-			free(current->value);
-			current->value = new_value;
-
-			if (current->value == NULL)
-			{
-				shash_table_delete(ht);
-				return (0);
-			}
-			return (1);
+			shash_table_delete(ht);
+			return (0);
 		}
-		current = current->next;
+		return (1);
 	}
 
 	new_node = create_new_node(key, value);
@@ -96,8 +77,13 @@ int shash_table_set(shash_table_t *ht, const char *key, const char *value)
 	if (new_node == NULL)
 		return (0);
 
-	insert_sorted_node(ht, new_node);
-	ht->array[index] = new_node;
+	new_node->next = current;
+
+	if (prev != NULL)
+		prev->next = new_node;
+	else
+		ht->array[index] = new_node;
+
 	return (1);
 }
 	
@@ -241,49 +227,4 @@ shash_node_t *create_new_node(const char *key, const char *value)
 	new_node->snext = NULL;
 
 	return (new_node);
-}
-
-/**
- * insert_sorted_node - Inserts a node into the sorted linked
- * list of the sorted hash table
- * 
- * @ht: The sorted hash table
- * @new_node: The node to insert
- */
-void insert_sorted_node(shash_table_t *ht, shash_node_t *new_node)
-{
-	shash_node_t *current;
-
-	if (ht->shead == NULL)
-	{
-		ht->shead = new_node;
-		ht->stail = new_node;
-	}
-	else
-	{
-		current = ht->shead;
-
-		while (current != NULL && strcmp(current->key, new_node->key) < 0)
-		{
-			current = current->snext;
-		}
-
-		if (current == NULL)
-		{
-			new_node->sprev = ht->stail;
-			ht->stail->snext = new_node;
-			ht->stail = new_node;
-		}
-		else
-		{
-			if (current->sprev != NULL)
-				current->sprev->snext = new_node;
-			else
-				ht->shead = new_node;
-
-			new_node->sprev = current->sprev;
-			new_node->snext = current;
-			current->sprev = new_node;
-		}
-	}
 }
