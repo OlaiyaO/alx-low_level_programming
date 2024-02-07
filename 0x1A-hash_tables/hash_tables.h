@@ -101,7 +101,17 @@ void shash_table_print_rev(const shash_table_t *ht);
 
 void shash_table_delete(shash_table_t *ht);
 
-shash_node_t *create_sorted_node(const char *key, const char *value);
+int update_sorted_list(
+	shash_table_t *ht,
+	shash_node_t *current,
+	shash_node_t *new_node
+	);
 
-void insert_sorted_node(shash_table_t *ht, shash_node_t *new_node);
+int insert_into_array(
+	shash_table_t *ht,
+	unsigned long int index,
+	const char *key,
+	const char *value
+	);
+
 #endif /* HASH_TABLES_H */
