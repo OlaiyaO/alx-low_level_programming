@@ -13,12 +13,11 @@ all: m.h $(OBJ)
 	$(CC) $(OBJ) -o $(NAME)
 
 clean:
-	$(RM) $(OBJ) $(NAME) $(wildcard *~)
+	$(RM) $(OBJ) *~ $(NAME)
 
 oclean:
 	$(RM) $(OBJ)
 
-fclean: clean
-	$(RM) $(wildcard *~)
+fclean: clean oclean
 
 re: fclean all
