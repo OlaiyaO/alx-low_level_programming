@@ -1,6 +1,5 @@
 #include "search_algos.h"
 #include <math.h>
-#include <stdio.h>
 
 /**
  * jump_list - Searches for a value in a sorted list of integers
@@ -16,6 +15,7 @@ listint_t *jump_list(listint_t *list, size_t size, int value)
 {
 	size_t jump, i;
 	listint_t *prev, *current;
+
 	if (list == NULL)
 		return (NULL);
 
